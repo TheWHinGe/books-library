@@ -1,9 +1,7 @@
-import 'package:books_web_client/models/book.dart';
-import 'package:books_web_client/models/genres.dart';
 import 'package:books_web_client/models/status.dart';
+import 'package:books_web_client/pages/book_create_page.dart';
 import 'package:books_web_client/pages/books_page.dart';
-import 'package:books_web_client/requests.dart';
-import 'package:dio/dio.dart';
+import 'package:books_web_client/api/requests.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -20,16 +18,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Book library',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
       ),
       // initialRoute: '/',
       // routes: {
       //   '/': (context) => const MyHomePage(),
       //   '/second': (context) => const BooksPage(),
       // },
-      home: const Scaffold(
-        body: MyHomePage(),
-      ),
+      home: const MyHomePage(),
     );
   }
 }
@@ -42,11 +38,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final myController = TextEditingController();
+  final limitController = TextEditingController();
+  final startIdController = TextEditingController();
+  final idController = TextEditingController();
+  Status? status;
 
   @override
   void dispose() {
-    myController.dispose();
+    limitController.dispose();
+    startIdController.dispose();
+    idController.dispose();
     super.dispose();
   }
 
@@ -71,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     height: 35,
                     width: 55,
                     child: TextField(
-                      controller: myController,
+                      controller: limitController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: 'limit',
@@ -84,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     height: 35,
                     width: 75,
                     child: TextField(
-                      controller: myController,
+                      controller: startIdController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: 'startID',
@@ -99,7 +100,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => BooksPage(
-                                bookFunction: Requests().getAllBooks())),
+                                    bookFunction: Requests().getAllBooks(
+                                  limit: limitController.text,
+                                  startId: startIdController.text,
+                                ))),
                       );
                     },
                     child: const Icon(Icons.book),
@@ -123,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     height: 35,
                     width: 55,
                     child: TextField(
-                      controller: myController,
+                      controller: idController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: 'ID',
@@ -134,13 +138,92 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      if (myController.text.isNotEmpty) {
+                      if (idController.text.isNotEmpty) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => BooksPage(
                                   bookFunction: Requests()
-                                      .showBookById(myController.text))),
+                                      .showBookById(idController.text))),
+                        );
+                      }
+                    },
+                    child: const Icon(Icons.book),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            SizedBox(
+              width: 200,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  const Text(
+                    'Добавить книгу',
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const BookCreatePage(),
+                        ),
+                      );
+                    },
+                    child: const Icon(Icons.book),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            SizedBox(
+              width: 450,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //  crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text(
+                    'Посмотреть книгу по статусу',
+                  ),
+                  SizedBox(
+                    //  height: 35,
+                    width: 150,
+                    child: DropdownButton<Status>(
+                      value: status,
+                      items: Status.values.map((Status val) {
+                        return DropdownMenuItem(
+                          value: val,
+                          child: Text(
+                            val.name,
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      }).toList(),
+                      hint: const Text(
+                        'Введите статус',
+                        textAlign: TextAlign.center,
+                      ),
+                      onChanged: (Status? value) {
+                        setState(() {
+                          status = value!;
+                        });
+                      },
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (status != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BooksPage(
+                                  bookFunction: Requests()
+                                      .getAllBooksStatus(status!.name))),
                         );
                       }
                     },
@@ -151,25 +234,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  SizedBox drowWidget(String description, Function() function) {
-    return SizedBox(
-      height: 40,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            'Получить список всех книг',
-          ),
-          ElevatedButton(
-            onPressed: function,
-            // Requests().getAllBooks,
-            child: const Icon(Icons.book),
-          ),
-        ],
       ),
     );
   }

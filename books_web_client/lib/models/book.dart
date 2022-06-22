@@ -1,5 +1,4 @@
-import 'package:books_web_client/models/genres.dart';
-import 'package:books_web_client/models/status.dart';
+import 'package:books_web_client/models/models.dart';
 import 'package:enum_object/enum_object.dart';
 
 class Book {

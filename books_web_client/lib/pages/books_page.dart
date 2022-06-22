@@ -1,7 +1,4 @@
 import 'package:books_web_client/models/book.dart';
-import 'package:books_web_client/models/genres.dart';
-import 'package:books_web_client/models/status.dart';
-import 'package:books_web_client/requests.dart';
 import 'package:flutter/material.dart';
 
 class BooksPage extends StatefulWidget {
@@ -32,6 +29,19 @@ class _BooksPageState extends State<BooksPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
+                            SizedBox(
+                              width: 25,
+                              child: Column(
+                                children: [
+                                  const Text(
+                                    'ID',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(book.id.toString()),
+                                ],
+                              ),
+                            ),
                             SizedBox(
                               width: 200,
                               child: Column(
@@ -67,7 +77,7 @@ class _BooksPageState extends State<BooksPage> {
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   ),
-                                  Text(book.status.toString()),
+                                  Text(book.status?.name ?? 'unknow'),
                                 ],
                               ),
                             ),
@@ -77,6 +87,13 @@ class _BooksPageState extends State<BooksPage> {
             );
           }
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        backgroundColor: Colors.green,
+        child: const Icon(Icons.keyboard_arrow_left),
       ),
     );
   }
