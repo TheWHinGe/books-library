@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Conduit OpenAPI Client</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@3.12.1/swagger-ui.css">
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+</head>
+
+<body>
+<div id="swagger-ui"></div>
+<script src="https://unpkg.com/swagger-ui-dist@3.12.1/swagger-ui-standalone-preset.js"></script>
+<script src="https://unpkg.com/swagger-ui-dist@3.12.1/swagger-ui-bundle.js"></script>
+<script>
+    window.onload = function() {       
+        const ui = SwaggerUIBundle({
+            spec: {"openapi":"3.0.0","info":{"title":"book_home_library_server","description":"An empty conduit application.","version":"0.0.1"},"servers":[{"url":"http://localhost:8888"}],"paths":{"/book":{"get":{"tags":["Books"],"operationId":"showAllBooks","parameters":[{"name":"startId","in":"query","required":false,"allowEmptyValue":false,"schema":{"type":"integer"}},{"name":"limit","in":"query","required":false,"allowEmptyValue":false,"schema":{"type":"integer"}}],"responses":{"200":{"description":"Successful response."}}},"post":{"tags":["Books"],"operationId":"createBook","parameters":[],"responses":{"200":{"description":"Successful response."}}},"put":{"tags":["Books"],"operationId":"upgradingBook","parameters":[],"responses":{"200":{"description":"Successful response."}}}},"/book/{id}":{"parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"string"},"explode":false,"allowReserved":false}],"get":{"tags":["Books"],"operationId":"showBookById","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer"}}],"responses":{"200":{"description":"Successful response."}}}},"/book/findByStatus":{"get":{"tags":["BooksStatus"],"operationId":"getAllBooksStatus","parameters":[{"name":"status","in":"query","required":true,"allowEmptyValue":false,"schema":{"type":"string"}}],"responses":{"200":{"description":"Successful response."}}}},"/example":{},"/other":{}},"components":{"responses":{"InsufficientScope":{"description":"The provided credentials or bearer token have insufficient permission to access this route.","content":{"application/json":{"schema":{"type":"object","properties":{"error":{"type":"string"},"scope":{"type":"string","description":"The required scope for this operation."}}}}}},"InsufficientAccess":{"description":"The provided credentials or bearer token are not authorized for this request.","content":{"application/json":{"schema":{"type":"object","properties":{"error":{"type":"string"}}}}}},"MalformedAuthorizationHeader":{"description":"The provided Authorization header was malformed.","content":{"application/json":{"schema":{"type":"object","properties":{"error":{"type":"string"}}}}}}}}},
+            dom_id: '#swagger-ui',
+            deepLinking: true,
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIStandalonePreset
+            ],
+            plugins: [
+                SwaggerUIBundle.plugins.DownloadUrl
+            ],
+            layout: "StandaloneLayout",
+        })
+        window.ui = ui
+    }
+</script>
+</body>
+
+</html>
+    
